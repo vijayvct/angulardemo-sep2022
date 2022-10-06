@@ -332,9 +332,167 @@ Structural Directives
 		"variable" is know as "template input variable"
 			scope is only within <element>
 			
+		*ngFor Variables 
+		
+			index: contains the zero based index of item being iterated 
 			
+			*ngFor = "let b of books;let i=index"
+			
+			odd: returns true if the item is an odd item 
+			
+			even: returns true if the item ia an even item 
+			
+			*ngFor ="let b of books;let i=index;let o=odd;let e=even"
+			
+			trackBy:function
+				Tells Angular how each item in the collection must be tracked
+				Without trackBy, Angular re-renders the entire DOM tree, event if the data is not changed
+				
+			a.Create a funcyion which returns a unique value from the model, which angular will use to track each item
+				Ex:- eid,pid,bookid..etc
+				
+			b.Use the trackBy property with the *ngFor and specify the name of the tracking function create
+			
+			if the data changes, the existing DOM elements will not be re-rendered and only the new DOM elements would be add to the DOM tree
+		
 Attribute Directive 
 
 	ngModel 
 	ngStyle 
 	ngClass
+	
+Creating Custom Directives
+--------------------------
+
+a.Creating a custom attribute directive 
+b.Creating a custom structural directive
+
+a.Creating a custom attribute directive
+
+	1.Create a TS class and decorate it with @Directive() decorator
+	2.Declare the directive in the "declaration" section of the AppModule 
+	3.Use the directive in the component's template 
+	
+	Angular CLI --> ng generate directive <<directivename>>
+	
+	First decide, what the custom directive is supposed to do?
+	
+	Example:
+		AlertDirective (directive class)
+			<element [alert]></element>
+			
+		What should it do?
+		When applied to an HTML Element, it must display an alert message 
+		
+			<p [alert]>Hello</p> --- Display an alert message
+			<span [alert]>Welcome</span>
+			
+		Inside the custom directive, we can respond to the event of the HOST ELEMENT
+		
+		a.Inside the directive , create a handler function
+		b.Decorate it with @HostListener() decorator and specify the DOM event
+		
+		A custom directive can be applied to a DOM element as well as to a custom component
+		
+		Accessing the HOST Element from within the directive 
+			To change the behaviour of the HOST element 
+			Inject the ElementRef service into the directive class
+			
+	Just like components, directives can also have input properties (marked with @Input())
+	
+	<p appAlert inputmessage="Welcome"></p>
+	
+	<p appAlert inputmessage="Hello"></p>
+	
+	"inputmessage" is an input property
+	
+	<p appAlert [inputmessage]="'This is Some Message'"></p>
+	
+	If we need to pass a literal to input property using property binding syntax, use single quotes within double quotes"
+	
+	<span appAlert="Hi">....</span>
+		OR
+	<span [appAlert] = "Hi">....</span>
+	
+	we can create getter and setter in the directive class to make the above code work 
+	Decorate the setter with the @Input() Decorator 
+	
+Creating a Custom Structural directive 
+--------------------------------------
+Objective :- Creat a Custom structural directive which repeats/clone an element for the specified number of time (similar to ngFor)
+
+Usage :- 
+
+	<element *appRepeat="10"></element
+	<p appRepeat="10>Hello</p>
+	
+	
+	1.Create a directive
+	
+		ng g d repeat --skip-tests
+		
+	2.Two things needed for creating a structural directive
+		a.ViewContainerRef
+		b.TemplateRef
+		
+	3.Inject the above service/classes in the constructor of the directive as private variables
+	
+	ViewContainerRef corresponds to a location the DOM where the embedded view is create 
+	TemplateRef represents an embedded template
+	
+	4.Create a setter and getter with name appRepeat and decorate the setter with @Input decorator
+	
+	5.The logic to clone the element will be inside the setter 
+	
+	Logic 
+		Use the createEmbeddedView() of the ViewContainerRef passing templateRef
+		
+		this.viewcontainer.createEmbeddedView(this.templateref);
+		
+Pipes
+=====
+Formerly know as "filters" in AngularJS (1.x)
+A pipe allows you to transform some input and return the transformed value back
+
+input ------> PIPE(transform)-------> TransformedData
+
+Many Built-In Pipes are available 
+	1.decimal
+	2.currency
+	3.date
+	4.json
+	5.uppercase
+	6.lowercase
+	7.titlecase 
+	8.async(used with observables)
+	.....
+	
+	Syntax :- Pipes are always used in template 
+	
+		{{ expression/input to the pipe | pipename }}
+		
+		{{ dob | date }}
+		{{ price | currency }}
+
+		Chaining of Pipes 
+		
+		{{ expresssion/input | pipe1 | pipe2 | pipe3.. }}
+		
+Custom Pipe
+-----------
+Create a custom to get square of a number 
+
+	{{ 2 |square }}
+	
+	1.Create a class decorated with @Pipe() decorator , optionally implement the PipeTransform interface
+	
+	2.Write the transformation logic inside the transform() method 
+	
+	3.Angular call the transform() when the pipe is used
+	
+	ng generate pipe <<pipename>>
+		OR 
+	ng g p <<pipename>>
+	
+	First argument to the transform() method is the value on the left side of the pipe.
+	Additional arguments can be passed as parameters to the transform() -optional
