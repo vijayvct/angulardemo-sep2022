@@ -8,7 +8,7 @@ It is client-side technology
 It is build using TypeScript
 It is used to build SPA (Single Page Application)
 It is component-based framework
-It provide a collection o well-integrated libraries that covers a wide varieties of features including routing, form management, client-server communication and more ....
+It provide a collection of well-integrated libraries that covers a wide varieties of features including routing, form management, client-server communication and more ....
 
 Traditional Application 
 -----------------------
@@ -32,6 +32,7 @@ Angular 5
 
 Core Building Blocks of Angular
 -------------------------------
+Modules 	
 Component 
 	-Class (TypeScript Class)
 		properties 
@@ -41,7 +42,6 @@ Component
 Services 
 Directives 
 Pipes
-Modules
 Routing 
 
 Architecture of Angular Application
@@ -496,3 +496,165 @@ Create a custom to get square of a number
 	
 	First argument to the transform() method is the value on the left side of the pipe.
 	Additional arguments can be passed as parameters to the transform() -optional
+	
+Service 
+-------
+A service is a TS Class which contains logic that can be used by multiple components
+
+A service is a Singleton instance - Angular creates once instance of the service per application and the same instance is shared by all the components
+
+Every service is created using @Injectable decorator 
+
+A service can be injected into compoenents, directives, pipes using Angular Built-In dependency injection mechanism.
+
+Dependency Injection (DI) is a technique in which a class receives its dependencies from external source rather than creating them itself
+
+class Engine
+{
+	constructor(parameter){}
+}
+
+class Tires
+{
+	constructor() {}
+}
+
+Without DI
+----------
+class Car{
+	engine;
+	tires;
+	
+	constructor()
+	{
+		this.engine = new Engine();
+		this.tires =  new Tires();
+	}
+}
+
+With DI 
+-------
+class Car
+{
+	engine;
+	tires;
+	
+	constructor(engine,tires)
+	{
+		this.engine =engine;
+		thie.tires = tires;
+	}
+}
+
+var myEngine = new Engine(parameter);
+var myTires = new Tires(parameter);
+
+var myCar = new Car(myEngine,myTires);
+
+	DI Code ---> Create instance of dependencies --> Inject ---> Component
+
+HR Management System 
+--------------------
+Employee (Id,Firstname,LastName,Department,....)
+	
+	2 Components
+		employee-list (contains id and first-name of the employee)
+		employee-details (display the details information of the employee)
+		
+	ng generate service <<service-name>>
+		OR 
+	ng g s <<service-name>>
+	
+	A service class is decorated with @Injectable() decorator
+	@Injectable() makes the service class injectable using Angular's built-in DI
+	The class automatically participates in Angular's DI Mechanism 
+	Angular's DI mechanism will create instance of the service and inject them into components, pipes, directives when required
+	
+In a real-time application , the data will come from an API or Web Service.
+In Angular to interact with an API we make use of HTTPModule 
+
+HttpModule 
+	
+	HttpClient  - @angular/common/http
+	
+	-The ability to request typed reponse objects
+	-Error handling 
+	-Testing 
+	-Request and Response interception
+	
+	GET 
+	POST
+	PUT 
+	PATCH
+	DELETE
+
+What is an Observable?
+----------------------
+Observable is an asynchronous pattren.
+
+In Observable pattern we have an Observable(Publisher) and an Observer.
+Observer observe the Observable.
+In many implementation an Observer is also called as Subscriber
+
+An Observable can have many subscribers 
+
+Observable emits items or notifications over time to which an subscriber can subscribe
+When a subscriber subscribes to an Observable , the subscriber also specifies a callback function 
+
+https://ct-testapi-02.azurewebsites.net/api/employee
+
+Routing 
+--------
+Routing is a technique to navigate between view in a SPA(Single Page Application)
+
+In Angular, the RouteModule (@angular/router) has the API related to routing
+
+Angulat interprets changes to the browser URL and performs the navigation based on the routes configured
+
+	URL :-
+	
+		Every Angular Application has a base URL 
+		
+		http://servername/appname:port/index.html 
+		
+		http://localhost:4200/index.html - Base URL of an Angular App 
+		
+		During routing, the base URL does not change 
+		Routing starts from the end of the base URL 
+		
+		Route Could be :
+		
+		http://localhost:4200/index.html/home --> HomeComponent
+		http://localhost:4200/index.html/aboutus --> AboutComponent
+		baseURL/contact --> ContactComponent
+		
+		In the index.html , the "base href" element tell angular how the URL's should be generated
+			Default is "/"
+			
+			http://localhost:4200/index.html/home
+			
+			We can change the value of base href 
+			<base href="ct"/>
+			
+			http://localhost:4200/ct/home
+			http://localhost:4200/ct/aboutus
+			.
+			.
+			.......
+			
+Steps to Use Routing 
+--------------------
+a.Define routes for the application
+	Routes can be defined in "app-routing.module.ts"
+	
+b.Create an array which contains one or more "route" objects	
+	Each route object contains the following properties
+	
+		1.path --> the URL Pattern
+		2.component --> The componenet to be shown when the paterrns specified 
+		3.childern
+		4.redirectTo
+		
+c.Use RouteModule.forRoot() method passing the route array to inject all the routing service and obtain a RouterModule --> App Level 
+
+d.Import the RouteModule created in the above step into the app module
